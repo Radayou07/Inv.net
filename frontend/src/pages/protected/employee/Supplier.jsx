@@ -6,7 +6,10 @@ import {
   AlertTriangle, 
   ShieldCheck, 
   TrendingUp, 
-  ChevronDown 
+  ChevronDown,
+  Phone,
+  Mail,
+  MapPin
 } from "lucide-react";
 
 export default function SupplierPage({
@@ -60,7 +63,7 @@ export default function SupplierPage({
           </div>
 
           <button 
-            onClick={() => alert("Add Supplier modal can be integrated or custom trigger is set.")} 
+            onClick={onOpenAddSupplierModal} 
             className="bg-[#142175] text-white font-sans font-bold text-xs h-10 px-4 rounded-lg flex items-center gap-2 hover:bg-[#2e3a8c] transition-colors shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -148,6 +151,25 @@ export default function SupplierPage({
                     <ShieldCheck className="w-3.5 h-3.5 text-[#142175]" />
                     <span className="font-sans text-xs font-semibold">Verified Partner - Tier 1</span>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Details */}
+            <div className="bg-white border border-[#eceef0] rounded-lg p-4 relative z-10 space-y-3 shadow-xs">
+              <h4 className="font-sans font-bold text-xs text-[#142175] uppercase tracking-wider mb-1">Contact Information</h4>
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2.5 text-sm text-[#454651]">
+                  <Phone className="w-4 h-4 text-[#767682] flex-shrink-0" />
+                  <span className="font-mono text-xs text-[#191c1e]">{activeSupplier.phone || "+1 (555) 019-4822"}</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-sm text-[#454651]">
+                  <Mail className="w-4 h-4 text-[#767682] flex-shrink-0" />
+                  <span className="font-sans text-xs text-[#191c1e] break-all">{activeSupplier.email || "contact@supplier.com"}</span>
+                </div>
+                <div className="flex items-start gap-2.5 text-sm text-[#454651]">
+                  <MapPin className="w-4 h-4 text-[#767682] flex-shrink-0 mt-0.5" />
+                  <span className="font-sans text-xs text-[#191c1e] leading-relaxed">{activeSupplier.address || "No custom address registered"}</span>
                 </div>
               </div>
             </div>

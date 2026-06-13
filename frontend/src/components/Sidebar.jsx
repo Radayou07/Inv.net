@@ -7,7 +7,8 @@ import {
   Truck, 
   UserRoundCog, 
   Settings, 
-  LogOut 
+  LogOut,
+  // TbBrandCpp
 } from "lucide-react";
 
 export default function Sidebar({
@@ -38,7 +39,7 @@ export default function Sidebar({
           <ShieldCheck className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="font-sans font-bold text-lg text-[#142175] tracking-tight leading-none">NexusAuth</h1>
+          <h1 className="font-sans font-bold text-lg text-[#142175] tracking-tight leading-none">Inv-NET</h1>
           <p className="font-sans text-[11px] font-medium text-[#505f76] mt-0.5">Enterprise Access</p>
         </div>
       </div>

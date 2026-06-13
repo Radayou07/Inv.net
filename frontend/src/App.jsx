@@ -107,10 +107,10 @@ export default function App() {
   ]);
 
   const [suppliers, setSuppliers] = useState([
-    { id: "sup1", name: "Apex Electronics Inc.", category: "Hardware Components", totalSpend: 1245000, pending: 45200, overdueCount: 3 },
-    { id: "sup2", name: "Global Metals Corp", category: "Raw Materials", totalSpend: 890500, pending: 0, overdueCount: 0 },
-    { id: "sup3", name: "SysLogic Solutions", category: "Software Licensing", totalSpend: 420000, pending: 12500, overdueCount: 1 },
-    { id: "sup4", name: "Nexo Logistics", category: "Shipping & Freight", totalSpend: 315200, pending: 8100, overdueCount: 1 }
+    { id: "sup1", name: "Apex Electronics Inc.", category: "Hardware Components", totalSpend: 1245000, pending: 45200, overdueCount: 3, phone: "+1 (555) 019-4822", email: "contact@apexelectronics.com", address: "401 Silicon Valley Blvd, Suite A, San Jose, CA" },
+    { id: "sup2", name: "Global Metals Corp", category: "Raw Materials", totalSpend: 890500, pending: 0, overdueCount: 0, phone: "+1 (555) 014-9921", email: "sales@globalmetals.com", address: "12 Industrial Pkwy, Chicago, IL" },
+    { id: "sup3", name: "SysLogic Solutions", category: "Software Licensing", totalSpend: 420000, pending: 12500, overdueCount: 1, phone: "+1 (555) 012-3456", email: "licensing@syslogicsolutions.com", address: "88 Enterprise Way, Boston, MA" },
+    { id: "sup4", name: "Nexo Logistics", category: "Shipping & Freight", totalSpend: 315200, pending: 8100, overdueCount: 1, phone: "+1 (555) 018-7744", email: "ops@nexologistics.net", address: "91 Port Terminal Blvd, Newark, NJ" }
   ]);
 
   const [employees, setEmployees] = useState([
@@ -159,6 +159,16 @@ export default function App() {
   const [newEmpPhone, setNewEmpPhone] = useState("");
   const [newEmpEmail, setNewEmpEmail] = useState("");
   const [newEmpRole, setNewEmpManagerRole] = useState("Staff");
+
+  // New supplier input fields
+  const [newSupName, setNewSupName] = useState("");
+  const [newSupCategory, setNewSupCategory] = useState("Hardware Components");
+  const [newSupPhone, setNewSupPhone] = useState("");
+  const [newSupEmail, setNewSupEmail] = useState("");
+  const [newSupAddress, setNewSupAddress] = useState("");
+  const [newSupTotalSpend, setNewSupTotalSpend] = useState("");
+  const [newSupPending, setNewSupPending] = useState("");
+  const [newSupOverdueCount, setNewSupOverdueCount] = useState("0");
 
   // Add stock quantity input for Edit Product Modal
   const [addStockQuantity, setAddStockQuantity] = useState(0);
@@ -333,6 +343,37 @@ export default function App() {
     alert(`Active personnel listing created for ${newEmpName}.`);
   };
 
+  const submitNewSupplier = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!newSupName.trim()) {
+      alert("Supplier Name is required");
+      return;
+    }
+    const newSup = {
+      id: "sup_" + Date.now(),
+      name: newSupName,
+      category: newSupCategory,
+      phone: newSupPhone || "+1 (555) " + Math.floor(Math.random() * 900 + 100) + "-4822",
+      email: newSupEmail || "contact@" + newSupName.toLowerCase().replace(/[^a-z0-9]/g, "") + ".com",
+      address: newSupAddress || "No physical address registered",
+      totalSpend: parseFloat(newSupTotalSpend) || 0,
+      pending: parseFloat(newSupPending) || 0,
+      overdueCount: parseInt(newSupOverdueCount) || 0
+    };
+
+    setSuppliers(prev => [newSup, ...prev]);
+    setActiveModal(null);
+    setNewSupName("");
+    setNewSupCategory("Hardware Components");
+    setNewSupPhone("");
+    setNewSupEmail("");
+    setNewSupAddress("");
+    setNewSupTotalSpend("");
+    setNewSupPending("");
+    setNewSupOverdueCount("0");
+    alert(`Supplier ${newSupName} registered successfully!`);
+  };
+
   // Compute stats for Dashboard
   const lowStockItemsCount = stockDetails.filter(s => s.status === "Low Stock" || s.quantity < 100).length;
 
@@ -434,6 +475,7 @@ export default function App() {
             {currentTab === "supplier" && (
               <SupplierPage 
                 suppliers={suppliers}
+                onOpenAddSupplierModal={() => setActiveModal("add-supplier")}
                 onPayPending={handlePayPending}
               />
             )}
@@ -875,6 +917,99 @@ export default function App() {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Add Supplier Modal */}
+          {activeModal === "add-supplier" && (
+            <div className="relative bg-white w-full max-w-[440px] rounded-xl shadow-2xl overflow-hidden border border-[#c6c5d3] scale-100 opacity-100 flex flex-col max-h-[90vh]">
+              <div className="px-6 py-5 flex justify-between items-center bg-white border-b border-[#eceef0] shrink-0">
+                <div>
+                  <h3 className="font-sans font-bold text-lg text-[#142175]">Add New Supplier</h3>
+                  <p className="font-sans text-xs text-[#505f76] mt-0.5">Register a verified supply partner key.</p>
+                </div>
+                <button 
+                  onClick={() => setActiveModal(null)} 
+                  className="p-1.5 hover:bg-[#f2f4f6] rounded-full text-[#767682]"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+               <form onSubmit={submitNewSupplier} className="p-6 space-y-4 overflow-y-auto w-full">
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="font-sans font-bold text-xs text-[#454651] uppercase">Supplier Name</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={newSupName}
+                    onChange={(e) => setNewSupName(e.target.value)}
+                    placeholder="e.g. Acme Components LLC"
+                    className="w-full px-4 py-2 rounded-lg border border-[#c6c5d3] bg-white outline-none focus:ring-2 focus:ring-[#142175] text-sm"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="font-sans font-bold text-xs text-[#454651] uppercase">Phone/Contact Number</label>
+                  <input 
+                    type="tel" 
+                    required
+                    value={newSupPhone}
+                    onChange={(e) => setNewSupPhone(e.target.value)}
+                    placeholder="e.g. +1 (555) 019-4822"
+                    className="w-full px-4 py-2 rounded-lg border border-[#c6c5d3] bg-white outline-none focus:ring-2 focus:ring-[#142175] text-sm"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="font-sans font-bold text-xs text-[#454651] uppercase">Email Address</label>
+                  <input 
+                    type="email" 
+                    required
+                    value={newSupEmail}
+                    onChange={(e) => setNewSupEmail(e.target.value)}
+                    placeholder="e.g. contact@acmecomponents.com"
+                    className="w-full px-4 py-2 rounded-lg border border-[#c6c5d3] bg-white outline-none focus:ring-2 focus:ring-[#142175] text-sm"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="font-sans font-bold text-xs text-[#454651] uppercase">Physical Address</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={newSupAddress}
+                    onChange={(e) => setNewSupAddress(e.target.value)}
+                    placeholder="e.g. 100 Corporate Parkway, Suite 500, Seattle, WA"
+                    className="w-full px-4 py-2 rounded-lg border border-[#c6c5d3] bg-white outline-none focus:ring-2 focus:ring-[#142175] text-sm"
+                  />
+                </div>
+
+
+
+                <div className="p-4 bg-[#f2f4f6]/55 rounded-lg flex items-start gap-3 border border-[#eceef0] shrink-0 w-full">
+                  <Info className="w-5 h-5 text-[#142175] flex-shrink-0 mt-0.5" />
+                  <p className="font-sans text-xs text-[#505f76] leading-relaxed">
+                    Once the partner profile is added, you will be able to dispatch inventory buy sheets or settle outstanding invoices directly.
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-[#eceef0] flex gap-3 w-full">
+                  <button 
+                    type="button"
+                    onClick={() => setActiveModal(null)}
+                    className="flex-1 bg-white border border-[#c6c5d3] text-[#505f76] text-xs font-bold py-3 rounded-lg hover:bg-[#eceef0] transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    className="flex-1 bg-[#142175] text-white text-xs font-bold py-3 rounded-lg hover:bg-[#2e3a8c] transition-colors shadow-sm"
+                  >
+                    Register Supplier
+                  </button>
+                </div>
+              </form>
             </div>
           )}
 
