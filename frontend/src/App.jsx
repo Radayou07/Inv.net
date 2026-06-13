@@ -533,7 +533,7 @@ export default function App() {
                     required
                     value={newProdName}
                     onChange={(e) => setNewProductName(e.target.value)}
-                    placeholder="e.g. High-Performance Server X2"
+                    placeholder="e.g. msi cyborg 15 A13V"
                     className="w-full px-4 py-2 border border-[#c6c5d3] rounded-lg text-sm bg-white"
                   />
                 </div>
