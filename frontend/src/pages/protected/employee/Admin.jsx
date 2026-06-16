@@ -62,7 +62,6 @@ export default function AdminPage({
                   <th className="px-6 py-3 font-sans text-xs font-bold text-[#454651] uppercase tracking-wider">Employee</th>
                   <th className="px-6 py-3 font-sans text-xs font-bold text-[#454651] uppercase tracking-wider">Role</th>
                   <th className="px-6 py-3 font-sans text-xs font-bold text-[#454651] uppercase tracking-wider">Access Level</th>
-                  <th className="px-6 py-3 font-sans text-xs font-bold text-[#454651] uppercase tracking-wider">Last Active</th>
                   <th className="px-6 py-3 font-sans text-xs font-bold text-[#454651] uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
@@ -70,7 +69,7 @@ export default function AdminPage({
                 {employees.map((emp, index) => (
                   <tr key={emp.id} className="hover:bg-[#f7f9fb]/50 transition-colors group">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
+                       <div className="flex items-center">
                         <div className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs ${getRandomColorClass(index)}`}>
                           {getAvatarInitials(emp.name)}
                         </div>
@@ -85,17 +84,14 @@ export default function AdminPage({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2.5 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
-                        emp.accessLevel.includes("1") || emp.accessLevel.toLowerCase().includes("admin")
+                        emp.accessLevel.toLowerCase().includes("admin")
                           ? "bg-[#ffdad6] text-[#93000a]"
-                          : emp.accessLevel.includes("2")
+                          : emp.accessLevel.toLowerCase().includes("manager")
                           ? "bg-[#d0e1fb] text-[#142175]"
                           : "bg-[#e0e3e5] text-[#454651]"
                       }`}>
                         {emp.accessLevel}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-sans text-xs text-[#505f76]">
-                      {emp.lastActive}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                       <button 
@@ -116,7 +112,7 @@ export default function AdminPage({
 
                 {employees.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center font-sans text-sm text-[#505f76]">
+                    <td colSpan={4} className="py-8 text-center font-sans text-sm text-[#505f76]">
                       No active operational personnel. Click "Add Employee" on the right to append.
                     </td>
                   </tr>
@@ -136,16 +132,16 @@ export default function AdminPage({
             <div className="text-xs space-y-3 font-sans text-[#454651] leading-relaxed">
               <p>The system utilizes hierarchical Role-Based Access Control (RBAC) configured relative to high-security compliance keys.</p>
               <div className="p-3 bg-white rounded border border-[#eceef0] space-y-2">
-                <p className="font-bold text-[#191c1e]">Tier 1 (Root Access):</p>
+                <p className="font-bold text-[#191c1e]">Admin:</p>
                 <p className="text-[11px] text-[#505f76]">Full system-wide administrative control, catalog deletes, accounting audits, and personnel permission creation.</p>
               </div>
               <div className="p-3 bg-white rounded border border-[#eceef0] space-y-2">
-                <p className="font-bold text-[#191c1e]">Tier 2 (Security Access):</p>
+                <p className="font-bold text-[#191c1e]">Manager:</p>
                 <p className="text-[11px] text-[#505f76]">Read, write, edit catalog specifications, warehouse locations and quantity, customer accounts, and settling bills.</p>
               </div>
               <div className="p-3 bg-white rounded border border-[#eceef0] space-y-2">
-                <p className="font-bold text-[#191c1e]">Tier 3 (View-Only / Operator):</p>
-                <p className="text-[11px] text-[#505f76]">Read-only analytics view, basic stock tracking updates, and personal profile maintenance.</p>
+                <p className="font-bold text-[#191c1e]">Sales Representative:</p>
+                <p className="text-[11px] text-[#505f76]">Read-only analytics view, customer communications, catalog exploration, and personal profile maintenance.</p>
               </div>
             </div>
           </div>

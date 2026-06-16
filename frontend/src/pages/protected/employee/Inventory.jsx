@@ -27,7 +27,7 @@ export default function InventoryPage({
   // Filtered stocks based on chosen warehouse card
   const filteredStocks = useMemo(() => {
     if (selectedWarehouseFilter === "All") return stockDetails;
-    return stockDetails.filter(s => s.location.toLowerCase() === selectedWarehouseFilter.toLowerCase());
+    return stockDetails.filter(s => (s.warehouse_name || "").toLowerCase() === selectedWarehouseFilter.toLowerCase());
   }, [stockDetails, selectedWarehouseFilter]);
 
   // Paginated elements
@@ -40,8 +40,8 @@ export default function InventoryPage({
 
   const handleDownloadCSV = () => {
     // Basic mock CSV download
-    const headers = "Product Name,SKU,Location,Quantity,Status\n";
-    const rows = filteredStocks.map(s => `"${s.productName}",${s.sku},"${s.location}",${s.quantity},${s.status}`).join("\n");
+    const headers = "Product Name,Location,Quantity\n";
+    const rows = filteredStocks.map(s => `"${s.product_name}", "${s.warehouse_name}", ${s.quantity}`).join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -51,7 +51,7 @@ export default function InventoryPage({
   };
 
   const getStockItemIcon = (name) => {
-    const l = name.toLowerCase();
+    const l = (name || "").toLowerCase();
     if (l.includes("router")) return Router;
     if (l.includes("server") || l.includes("rack")) return Server;
     if (l.includes("ethernet") || l.includes("cable") || l.includes("spool")) return Cable;
@@ -117,8 +117,8 @@ export default function InventoryPage({
               </div>
 
               <div className="mt-2">
-                <p className="font-sans font-bold text-3xl text-[#191c1e]">{wh.units.toLocaleString()}</p>
-                <p className="font-sans text-xs font-semibold text-[#505f76] mt-0.5">Total Units in Stock</p>
+                <p className="font-sans font-bold text-3xl text-[#191c1e]">{wh.capacity?.toLocaleString() || 0}</p>
+                <p className="font-sans text-xs font-semibold text-[#505f76] mt-0.5">Total Capacity Units</p>
               </div>
             </div>
           );
@@ -167,7 +167,7 @@ export default function InventoryPage({
             </thead>
             <tbody className="divide-y divide-[#eceef0] bg-white">
               {paginatedStocks.map((stock) => {
-                const ItemIcon = getStockItemIcon(stock.productName);
+                const ItemIcon = getStockItemIcon(stock.product_name);
                 return (
                   <tr key={stock.id} className="hover:bg-[#f7f9fb] transition-colors">
                     {/* Icon and Name */}
@@ -176,36 +176,26 @@ export default function InventoryPage({
                         <div className="w-8 h-8 rounded bg-[#f2f4f6] flex items-center justify-center text-[#142175]">
                           <ItemIcon className="w-4.5 h-4.5" />
                         </div>
-                        <span className="font-sans text-sm font-semibold text-[#191c1e]">{stock.productName}</span>
+                        <span className="font-sans text-sm font-semibold text-[#191c1e]">{stock.product_name}</span>
                       </div>
                     </td>
 
-                    {/* SKU */}
-                    <td className="py-4 px-6 font-sans text-sm text-[#505f76]">{stock.sku}</td>
+                    {/* SKU fallback */}
+                    <td className="py-4 px-6 font-sans text-sm text-[#505f76]">PRD-{stock.product_id}</td>
 
                     {/* DC Location */}
-                    <td className="py-4 px-6 font-sans text-sm text-[#505f76]">{stock.location}</td>
+                    <td className="py-4 px-6 font-sans text-sm text-[#505f76]">{stock.warehouse_name}</td>
 
                     {/* Units Quantity */}
                     <td className="py-4 px-6 font-sans text-sm font-bold text-[#191c1e] text-right">
-                      {stock.quantity.toLocaleString()}
+                      {stock.quantity?.toLocaleString() || 0}
                     </td>
 
-                    {/* Dynamic Status Badges matching styles */}
+                    {/* Status Badge */}
                     <td className="py-4 px-6 text-center">
-                      {stock.status === "Optimal" ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#d0e1fb]/40 text-[#142175] border border-[#142175]/10">
-                          Optimal
-                        </span>
-                      ) : stock.status === "Low Stock" ? (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#ffdad6] text-[#93000a] border border-[#ba1a1a]/10">
-                          Low Stock
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#e0e3e5] text-[#454651] border border-[#767682]/10">
-                          Out of Stock
-                        </span>
-                      )}
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#d0e1fb]/40 text-[#142175] border border-[#142175]/10">
+                        Operational
+                      </span>
                     </td>
                   </tr>
                 );

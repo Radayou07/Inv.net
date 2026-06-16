@@ -31,13 +31,14 @@ export default function ProductPage({
     return products.filter((prod) => {
       const matchesSearch = 
         prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        prod.sku.toLowerCase().includes(searchQuery.toLowerCase());
+        (prod.sku || "").toLowerCase().includes(searchQuery.toLowerCase());
       
+      const categoryName = prod.category_name || prod.category || "";
       const matchesCategory = 
-        selectedCategory === "" || prod.category.toLowerCase() === selectedCategory.toLowerCase();
+        selectedCategory === "" || categoryName.toLowerCase() === selectedCategory.toLowerCase();
       
       const matchesBrand = 
-        selectedBrand === "" || prod.brand.toLowerCase() === selectedBrand.toLowerCase();
+        selectedBrand === "" || (prod.brand || "").toLowerCase() === selectedBrand.toLowerCase();
       
       return matchesSearch && matchesCategory && matchesBrand;
     });
@@ -47,17 +48,9 @@ export default function ProductPage({
   const sortedProducts = useMemo(() => {
     const list = [...filteredProducts];
     if (sortBy === "price_asc") {
-      return list.sort((a, b) => {
-        const pA = parseFloat(a.price.replace(/[^0-9.]/g, "")) || 0;
-        const pB = parseFloat(b.price.replace(/[^0-9.]/g, "")) || 0;
-        return pA - pB;
-      });
+      return list.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
     } else if (sortBy === "price_desc") {
-      return list.sort((a, b) => {
-        const pA = parseFloat(a.price.replace(/[^0-9.]/g, "")) || 0;
-        const pB = parseFloat(b.price.replace(/[^0-9.]/g, "")) || 0;
-        return pB - pA;
-      });
+      return list.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
     } else if (sortBy === "name_asc") {
       return list.sort((a, b) => a.name.localeCompare(b.name));
     }
@@ -195,7 +188,7 @@ export default function ProductPage({
             </thead>
             <tbody className="divide-y divide-[#eceef0]">
               {paginatedProducts.map((prod) => {
-                const iconMeta = getProductIcon(prod.category);
+                const iconMeta = getProductIcon(prod.category_name || prod.category || "");
                 const IconComp = iconMeta.icon;
                 
                 return (
@@ -208,38 +201,26 @@ export default function ProductPage({
                         </div>
                         <div>
                           <p className="font-sans text-sm font-bold text-[#191c1e]">{prod.name}</p>
-                          <p className="font-sans text-xs text-[#505f76] mt-0.5">SKU: {prod.sku}</p>
+                          <p className="font-sans text-xs text-[#505f76] mt-0.5">SKU: {prod.sku || `PRD-${prod.id}`}</p>
                         </div>
                       </div>
                     </td>
 
                     {/* Category */}
-                    <td className="p-4 font-sans text-xs font-semibold text-[#505f76]">{prod.category}</td>
+                    <td className="p-4 font-sans text-xs font-semibold text-[#505f76]">{prod.category_name || prod.category}</td>
 
                     {/* Brand */}
                     <td className="p-4 font-sans text-xs text-[#505f76]">{prod.brand}</td>
 
                     {/* Price */}
-                    <td className="p-4 font-sans text-sm font-bold text-[#191c1e]">{prod.price}</td>
+                    <td className="p-4 font-sans text-sm font-bold text-[#191c1e]">${parseFloat(prod.price).toFixed(2)}</td>
 
                     {/* Stock Level with Pill Indicator */}
                     <td className="p-4">
-                      {prod.stockLevel === "Digital" ? (
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-[#142175]"></span>
-                          <span className="font-sans text-xs font-bold text-[#142175]">Digital</span>
-                        </div>
-                      ) : prod.stockLevel <= 4 ? (
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-[#ba1a1a]"></span>
-                          <span className="font-sans text-xs font-bold text-[#ba1a1a]">{prod.stockLevel} Low Stock</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                          <span className="font-sans text-xs font-medium text-[#191c1e]">{prod.stockLevel} In Stock</span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span className="font-sans text-xs font-medium text-[#191c1e]">Managed in Inventory</span>
+                      </div>
                     </td>
 
                     {/* Action Button */}

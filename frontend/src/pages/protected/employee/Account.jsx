@@ -18,7 +18,6 @@ export default function AccountPage({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(profile.name);
-  const [editedTitle, setEditedTitle] = useState(profile.title);
   const [editedEmail, setEditedEmail] = useState(profile.email);
   const [editedPhone, setEditedPhone] = useState(profile.phone);
   const [editedLocation, setEditedLocation] = useState(profile.location);
@@ -27,7 +26,6 @@ export default function AccountPage({
     onUpdateProfile({
       ...profile,
       name: editedName,
-      title: editedTitle,
       email: editedEmail,
       phone: editedPhone,
       location: editedLocation
@@ -43,13 +41,6 @@ export default function AccountPage({
           <h2 className="font-sans font-bold text-3xl text-[#191c1e] tracking-tight">Account Settings</h2>
           <p className="font-sans text-sm text-[#505f76] mt-1">Manage your professional identity and access details.</p>
         </div>
-        <button 
-          onClick={onOpenAddEmployeeModal}
-          className="bg-[#142175] text-white px-5 py-2.5 rounded-lg font-sans font-semibold text-sm hover:bg-[#2e3a8c] transition-all flex items-center gap-2"
-        >
-          <User className="w-4 h-4 text-white" />
-          <span>Add Employee</span>
-        </button>
       </div>
 
       {/* Profile Card (Level 1 Surface) */}
@@ -123,25 +114,14 @@ export default function AccountPage({
                 <p className="font-sans text-base text-[#505f76] mt-1">{profile.title}</p>
               </>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
-                <div>
-                  <label className="block text-xs font-bold text-[#454651] uppercase mb-1">Full Name</label>
-                  <input 
-                    type="text" 
-                    value={editedName} 
-                    onChange={(e) => setEditedName(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-[#c6c5d3] rounded-lg text-sm bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-[#454651] uppercase mb-1">Job Title</label>
-                  <input 
-                    type="text" 
-                    value={editedTitle} 
-                    onChange={(e) => setEditedTitle(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-[#c6c5d3] rounded-lg text-sm bg-white"
-                  />
-                </div>
+              <div className="max-w-md">
+                <label className="block text-xs font-bold text-[#454651] uppercase mb-1">Full Name</label>
+                <input 
+                  type="text" 
+                  value={editedName} 
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="w-full px-3 py-1.5 border border-[#c6c5d3] rounded-lg text-sm bg-white"
+                />
               </div>
             )}
           </div>

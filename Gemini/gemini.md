@@ -121,9 +121,11 @@ Understand Database:
   - employee: a persomn respone for this payment (party A)
   - order_id
 
-## case in website
+## Website build
 
 - gemini role is to connect frontend to backend
+
+## for employee
 
 ### Home
 
@@ -209,4 +211,36 @@ Understand Database:
   - address
   - image
 
-### 
+### Account
+
+- name (employee.name)
+- employee id
+- role
+- phone number
+- email
+- location
+
+### Admin (only for admin/manager)
+
+- add employee
+  - name
+  - phone number
+  - email
+  - role
+  - image
+  - cancel
+  - add employee
+- employee
+  - name  role  access
+
+## for login
+
+- login
+  - user name
+  - email or phone number
+  - password
+- register (create custmer only)
+  - user name
+  - email or phone number
+  - password
+  - re-password

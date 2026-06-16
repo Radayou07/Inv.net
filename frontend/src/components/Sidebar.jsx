@@ -1,3 +1,4 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import { 
   ShieldCheck, 
   LayoutDashboard, 
@@ -8,33 +9,42 @@ import {
   UserRoundCog, 
   Settings, 
   LogOut,
-  // TbBrandCpp
+  ShoppingBag,
+  BarChart2
 } from "lucide-react";
 
 export default function Sidebar({
-  currentTab,
-  onTabChange,
+  onLogout,
   avatarText = "EP",
   employeeName = "E. Mitchell",
   employeeId = "94028"
 }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentPath = location.pathname;
+
   const menuItems = [
-    { id: "home", label: "Home", icon: LayoutDashboard },
-    { id: "product", label: "Product", icon: Boxes },
-    { id: "inventory", label: "Inventory", icon: Warehouse },
-    { id: "customer", label: "Customer", icon: Users },
-    { id: "supplier", label: "Supplier", icon: Truck },
+    { id: "home", label: "Home", icon: LayoutDashboard, path: "/home" },
+    { id: "products", label: "Products", icon: Boxes, path: "/products" },
+    { id: "inventory", label: "Inventory", icon: Warehouse, path: "/inventory" },
+    { id: "orders", label: "Orders", icon: ShoppingBag, path: "/orders" },
+    { id: "customer", label: "Customers", icon: Users, path: "/customer" },
+    { id: "supplier", label: "Suppliers", icon: Truck, path: "/supplier" },
+    { id: "analysis", label: "Analysis", icon: BarChart2, path: "/analysis" },
   ];
 
   const subItems = [
-    { id: "account", label: "Account", icon: UserRoundCog },
-    { id: "admin", label: "Admin", icon: Settings },
+    { id: "account", label: "Account", icon: UserRoundCog, path: "/account" },
+    { id: "admin", label: "Admin", icon: Settings, path: "/admin" },
   ];
+
+  const isActive = (path) => currentPath === path || (path !== "/home" && currentPath.startsWith(path));
 
   return (
     <aside className="fixed left-0 top-0 h-full flex flex-col w-64 border-r border-[#c6c5d3] bg-white shadow-sm z-50">
       {/* Brand Header */}
-      <div className="p-6 flex items-center gap-3 border-b border-[#c6c5d3] h-16 shrink-0">
+      <div className="p-6 flex items-center gap-3 border-b border-[#c6c5d3] h-16 shrink-0 cursor-pointer" onClick={() => navigate("/home")}>
         <div className="w-8 h-8 rounded-lg bg-[#142175] flex items-center justify-center text-white">
           <ShieldCheck className="w-5 h-5 text-white" />
         </div>
@@ -48,18 +58,18 @@ export default function Sidebar({
       <nav className="flex-1 overflow-y-auto py-4 flex flex-col gap-1 px-3">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = currentTab === item.id;
+          const active = isActive(item.path);
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => navigate(item.path)}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
-                isActive
+                active
                   ? "text-[#142175] font-bold border-r-4 border-[#142175] bg-[#f2f4f6]"
                   : "text-[#54647a] hover:bg-[#eceef0] hover:text-[#191c1e]"
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? "text-[#142175]" : "text-[#505f76]"}`} />
+              <Icon className={`w-5 h-5 ${active ? "text-[#142175]" : "text-[#505f76]"}`} />
               <span className="font-sans text-sm font-semibold">{item.label}</span>
             </button>
           );
@@ -69,18 +79,18 @@ export default function Sidebar({
 
         {subItems.map((item) => {
           const Icon = item.icon;
-          const isActive = currentTab === item.id;
+          const active = isActive(item.path);
           return (
             <button
               key={item.id}
-              onClick={() => onTabChange(item.id)}
+              onClick={() => navigate(item.path)}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
-                isActive
+                active
                   ? "text-[#142175] font-bold border-r-4 border-[#142175] bg-[#f2f4f6]"
                   : "text-[#54647a] hover:bg-[#eceef0] hover:text-[#191c1e]"
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? "text-[#142175]" : "text-[#505f76]"}`} />
+              <Icon className={`w-5 h-5 ${active ? "text-[#142175]" : "text-[#505f76]"}`} />
               <span className="font-sans text-sm font-semibold">{item.label}</span>
             </button>
           );
@@ -101,7 +111,7 @@ export default function Sidebar({
           </div>
           <button 
             title="Sign Out"
-            onClick={() => alert("Successfully signed out of secure session")}
+            onClick={onLogout}
             className="p-1 rounded hover:bg-[#f2f4f6] text-[#505f76] hover:text-red-700 transition"
           >
             <LogOut className="w-4 h-4" />

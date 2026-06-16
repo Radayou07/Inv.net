@@ -101,9 +101,18 @@ export default function SupplierPage({
                 >
                   {/* Name and Circle Badge */}
                   <div className="col-span-5 flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-xs ${getRandomColorClass(index)}`}>
-                      {getAvatarInitials(supp.name)}
-                    </div>
+                    {supp.profileImage ? (
+                      <img 
+                        src={supp.profileImage}
+                        alt={supp.name}
+                        className="w-8 h-8 rounded-full object-cover border border-[#eceef0] bg-white shadow-xs shrink-0"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-sans font-bold text-xs shrink-0 ${getRandomColorClass(index)}`}>
+                        {getAvatarInitials(supp.name)}
+                      </div>
+                    )}
                     <span className="font-sans text-sm font-semibold text-[#191c1e]">{supp.name}</span>
                   </div>
 
@@ -142,9 +151,18 @@ export default function SupplierPage({
             {/* Pane Header */}
             <div className="flex items-start justify-between relative z-10 border-b border-[#c6c5d3]/30 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-lg bg-[#d0e1fb] text-[#142175] flex items-center justify-center font-sans font-bold text-lg">
-                  {getAvatarInitials(activeSupplier.name)}
-                </div>
+                {activeSupplier.profileImage ? (
+                  <img 
+                    src={activeSupplier.profileImage}
+                    alt={activeSupplier.name}
+                    className="w-12 h-12 rounded-lg object-cover border border-[#eceef0] bg-white shadow-sm shrink-0"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-lg bg-[#d0e1fb] text-[#142175] flex items-center justify-center font-sans font-bold text-lg shrink-0">
+                    {getAvatarInitials(activeSupplier.name)}
+                  </div>
+                )}
                 <div>
                   <h3 className="font-sans font-bold text-[#191c1e] text-base leading-tight">{activeSupplier.name}</h3>
                   <div className="flex items-center gap-1.5 text-[#505f76] mt-1">
